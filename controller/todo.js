@@ -44,13 +44,13 @@ export const deleteTodo = async (req, res) => {
   try {
     const id = req.params.id;
 
-    await TodoModel.findOneAndDelete({ _id: id }, (err, todo) => {
-      if (err) {
-        res.status(500).json({ todo });
-      } else {
-        res.status(200).json({ todo });
+    const todo = await TodoModel.deleteOne({ _id: id });
+    if (todo) {
+      const todos = await TodoModel.find().exec();
+      if (todos[0]) {
+        res.status(200).json({ todos });
       }
-    });
+    }
   } catch (error) {
     res.status(500).json(error);
   }
